@@ -2,7 +2,9 @@ __author__ = 'Arthur'
 """
 This class is used as a data structure for passenger/driver.
 """
-class Member():
+
+
+class Member(object):
 
     name = None
     address = None
@@ -10,13 +12,13 @@ class Member():
     isDriver = None
     psg_list = None
 
-    def __init__(self, name, addr, isDriver=False):
+    def __init__(self, name, addr, is_driver=False):
         if (not name or not addr ):
             print("Error: Member input must has name, address")
             return None;
         self.name = name
         self.address = addr
-        self.isDriver = isDriver
+        self.isDriver = is_driver
         if self.isDriver:
             self.psg_list = list()
 
@@ -36,6 +38,9 @@ class Member():
 
     def isDriver(self):
         return self.isDriver
+
+    def get_psg_number(self):
+        return len(self.psg_list)
 
     # setter for coord
     def set_coord(self, coord):
