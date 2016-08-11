@@ -22,7 +22,7 @@ def read_from_csv(csv_file):
             else:
                 isD = False
 
-            tmp_mem = Member(tmp_name, row["address"] + ", canada", isD)
+            tmp_mem = Member(tmp_name, row["address"], isD)
             if isD:
                 dvr_list.append(tmp_mem)
             else:

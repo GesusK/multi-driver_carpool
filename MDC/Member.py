@@ -13,7 +13,7 @@ class Member(object):
     psg_list = None
 
     def __init__(self, name, addr, is_driver=False):
-        if (not name or not addr ):
+        if not name or not addr :
             print("Error: Member input must has name, address")
             return None;
         self.name = name
@@ -45,6 +45,10 @@ class Member(object):
     # setter for coord
     def set_coord(self, coord):
         self.coord = coord
+
+    def set_address(self, addr):
+        if addr:
+            self.address = addr
 
     def add_psg(self, member):
         self.psg_list.append(member)

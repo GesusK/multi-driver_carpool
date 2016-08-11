@@ -4,12 +4,12 @@ This module is used to cluster the passengers into different group,
 each of which is led by a driver.
 """
 
-import datetime
 import googlemaps
 from datetime import datetime
 
 from APIkey import APIkey
 import data_input
+import constants
 
 
 
@@ -22,8 +22,11 @@ def psgr_cluster(dvr_list, psg_list, car_capacity):
         message("Error: Not enough driver, Failed to do optimization.")
         return None
 
-    #set_member_coord(dvr_list, gmap)
-    #set_member_coord(psg_list, gmap)
+    for psg in psg_list:
+        restrict_area(psg)
+
+    for dr in dvr_list:
+        restrict_area(dr)
 
     for psg in psg_list:
         best_dr = None
@@ -58,6 +61,45 @@ def set_member_coord(member_list, gmap):
             message("Member " + member.get_name() + " address is missing")
 
     return
+
+
+def restrict_area(member, region=constants.REGION, country=constants.COUNTRY):
+    import re
+    reg_match = re.compile("[a-zA-Z]")
+
+    no_region = False
+    no_country = False
+
+    origin_addr = member.get_address().lower()
+    region_index = origin_addr.rfind(region[1].lower())
+    region_str_len = len(region[1])
+    reg_match.match(origin_addr[region_index - 1])
+    if region_index > 0 and not reg_match.match(origin_addr[region_index - 1]):
+        if region_index + region_str_len == len(origin_addr):
+            member.set_address(origin_addr[:region_index] + region[0])
+        elif not reg_match.match(origin_addr[region_index + region_str_len]):
+            member.set_address(origin_addr[:region_index] + region[0] + origin_addr[region_index + region_str_len:])
+    else:
+        no_region = True
+
+    origin_addr = member.get_address().lower()
+    ctr_index = origin_addr.rfind(country[1].lower())
+    ctr_str_len = len(country[1])
+    if ctr_index > 0 and not reg_match.match(origin_addr[ctr_index - 1]):
+        if ctr_index + ctr_str_len == len(origin_addr):
+            member.set_address(origin_addr[:ctr_index]+ country[0])
+        elif not reg_match.match(origin_addr[ctr_index + ctr_str_len]):
+            member.set_address(origin_addr[:ctr_index]+ country[0] + origin_addr[ctr_index + ctr_str_len])
+    else:
+        no_country = True
+
+    if no_region:
+        member.set_address(origin_addr + ", " + region[0])
+    if no_country:
+        member.set_address(member.get_address() + ", " + country[0])
+
+
+
 
 
 def message(msg, func_name="default"):
