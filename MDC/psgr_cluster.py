@@ -37,6 +37,9 @@ def psgr_cluster(dvr_list, psg_list, car_capacity):
 
             tmp = gmap.directions(dr.get_address(), psg.get_address(), mode="driving",
                                   departure_time=datetime.now(), avoid="tolls", units="metric")
+            if len(tmp) == 0:
+                message("Distance between " + dr.get_address() + " and " + psg.get_address() + " is not calculable")
+                return None
             tmp_dis = tmp[0].get("legs")[0].get("distance").get("value")
             tmp_time = tmp[0].get("legs")[0].get("duration_in_traffic").get("value")
 
@@ -108,7 +111,7 @@ def message(msg, func_name="default"):
 
 
 if __name__ == '__main__':
-    [d_list, p_list] = data_input.read_from_csv("test.csv")
+    [d_list, p_list] = data_input.read_from_csv("test2.csv")
     psgr_cluster(d_list, p_list, 4)
 
     print("End")
